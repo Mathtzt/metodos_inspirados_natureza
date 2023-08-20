@@ -1,9 +1,9 @@
-from deap import base, creator, tools
-
 import random
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
+from deap import base, creator, tools
 from opfunu.cec.cec2014.function import F1, F8
 from .utils import Utils as u
 
@@ -30,7 +30,7 @@ class PSO:
         self.func_name = func_name
         self.dimensions = dimensions
         self.population_size = population_size
-        self.max_evaluations = max_evaluations #// population_size
+        self.max_evaluations = max_evaluations // population_size
         self.min_start_position = bounds[0]
         self.max_start_position = bounds[1]
         self.omega = omega
@@ -46,6 +46,7 @@ class PSO:
         self.nout_bounds = 0
         self.min_fitness_values = None
         self.avg_fitness_values = None
+        self.mean_euclidian_distance_particles = None
         self.toolbox = base.Toolbox()
 
     def define_as_minimization_problem(self):
@@ -109,7 +110,7 @@ class PSO:
                               function = self.update_particle,
                               func_name = self.func_name)
 
-    def main(self, reset_classes: bool = False):
+    def main(self, reset_classes: bool = False, nexecucao: int = 0, dirpath: str = './'):
         if self.func_name == 'f1':
             if self.rotate_functions:
                 self.toolbox.register(alias = 'evaluate', function = F1)
@@ -136,6 +137,7 @@ class PSO:
         stats = tools.Statistics(lambda ind: ind.fitness.values)
         stats.register('min', np.min)
         stats.register('avg', np.mean)
+        stats.register('std', np.std)
 
         logbook = tools.Logbook()
         logbook.header = ['gen', 'evals'] + stats.fields
@@ -144,6 +146,7 @@ class PSO:
         initial_omega = self.omega
         nearly_stop_counter = 0
         igeneration_stopped = None
+        mean_euclidian_distance_particles = []
         for idx, generation in enumerate(range(1, self.max_evaluations + 1)):
             # reduzindo omega linearmente
             if self.reduce_omega_linearly:
@@ -160,7 +163,6 @@ class PSO:
                 if best is None or best.size == 0 or best.fitness < particle.fitness:
                     best = creator.Particle(particle)
                     best.fitness.values = particle.fitness.values
-        
                 if np.min(particle.fitness.values) == 0.0:
                     nearly_stop_counter += 1
             # atualizando velocidade e posição
@@ -170,11 +172,13 @@ class PSO:
             if self.early_stop_patience and nearly_stop_counter > self.early_stop_patience:
                 igeneration_stopped = idx
                 break
+
+            mean_euclidian_distance_particles.append(u.calc_mean_euclidian_distance_particles_from_pop(population))
             # salvando as estatísticas
             if generation == 1 or generation % 500 == 0:
                 logbook.record(gen = generation,
-                                evals = len(population),
-                                **stats.compile(population))
+                               evals = len(population),
+                               **stats.compile(population))
                 if self.show_log:
                     if self.reduce_omega_linearly:
                         print(logbook.stream + f" | omega = {self.omega}")
@@ -183,17 +187,39 @@ class PSO:
 
         self.min_fitness_values = [logbook[i]['min'] for i in range(len(logbook))]
         self.avg_fitness_values = [logbook[i]['avg'] for i in range(len(logbook))]
+        self.mean_euclidian_distance_particles = mean_euclidian_distance_particles
 
         print("-- Melhor partícula = ", best)
         print("-- Melhor fitness = ", best.fitness.values[0])
         print("-- Geração que parou a otimização = ", igeneration_stopped)
         print("-- Qtd de vezes que saiu do espaço de busca = ", self.nout_bounds)
 
+        registro = u.create_opt_history(execucao = nexecucao,
+                             func_objetivo = self.func_name,
+                             is_rotated = self.rotate_functions,
+                             dimensoes = self.dimensions,
+                             tamanho_populacao = self.population_size,
+                             total_geracoes = igeneration_stopped,
+                             range_position = [self.min_start_position, 
+                                               self.max_start_position],
+                             omega = self.omega,
+                             reduce_omega_linearly = self.reduce_omega_linearly,
+                             range_speed = [self.min_speed, self.max_speed],
+                             cognitive_factor = self.cognitive_update_factor,
+                             social_factor = self.social_update_factor,
+                             best_particle = best,
+                             best_fitness = best.fitness.values[0],
+                             out_bounds = self.nout_bounds
+                             )
+        
+        df_registro = pd.DataFrame([registro])
+        u.save_experiment_as_csv(base_dir = dirpath, dataframe = df_registro, filename = 'opt_history')
+
         if reset_classes:
             del creator.FitnessMin
             del creator.Particle
 
-    def plots(self, imgs_path: str, img_name: str):
+    def plot_fitness_evolution(self, imgs_path: str, img_name: str):
         plt.figure()
         plt.plot(self.min_fitness_values, color = 'red')
         plt.plot(self.avg_fitness_values, color = 'green')
@@ -202,7 +228,20 @@ class PSO:
         plt.title('Fitness mínimo e médio através das gerações')
         plt.yscale('log')
         plt.legend(['Min', 'Avg'])
-        # plt.tight_layout()
-        filename = f'{imgs_path}/{img_name}.jpg' 
+        
         # Salve a imagem
+        filename = f'{imgs_path}/{img_name}.jpg' 
+        plt.savefig(filename)
+
+    def plot_particle_distance_evolution(self, imgs_path: str, img_name: str):
+        plt.figure()
+        plt.plot(self.mean_euclidian_distance_particles, color = 'blue')
+        plt.xlabel('Gerações')
+        plt.ylabel('Avg')
+        plt.title('Distância média das partículas')
+        plt.yscale('log')
+        plt.legend(['Avg'])
+
+        # Salve a imagem
+        filename = f'{imgs_path}/{img_name}.jpg' 
         plt.savefig(filename)
