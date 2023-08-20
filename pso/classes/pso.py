@@ -172,6 +172,8 @@ class PSO:
             if self.early_stop_patience and nearly_stop_counter > self.early_stop_patience:
                 igeneration_stopped = idx
                 break
+            else:
+                igeneration_stopped = idx
 
             mean_euclidian_distance_particles.append(u.calc_mean_euclidian_distance_particles_from_pop(population))
             # salvando as estatísticas
