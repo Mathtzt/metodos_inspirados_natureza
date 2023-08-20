@@ -64,4 +64,11 @@ High Conditioned Elliptic Function,100,150,2,sus,single_point,swap,0.05,4,2,5.16
 Rastrigin Function,100,50,2,rws,single_point,inversion,0.05,2,13,8.357976204244146e-05
 Rastrigin Function,100,100,2,rws,single_point,inversion,0.05,2,0,0.0001203719112652
 Rastrigin Function,100,10,2,rws,single_point,inversion,0.05,2,11,0.0002024476981296
-Rastrigin Function,100,150,2,rws,single_point,inversion,0.05,2,10,0.00010590043331647049
+Rastrigin Function,100,150,2,rws,single_point,inversion,0.05,2,10,0.0001059004333164
+High Conditioned Elliptic Function,100,50,2,sus,single_point,random,0.05,1,10,1.4865957109084464e-07
+High Conditioned Elliptic Function,100,50,2,sus,two_points,random,0.05,1,13,8.266186975397779e-08
+High Conditioned Elliptic Function,100,50,4,sus,single_point,random,0.05,1,11,5.6845382155624e-08
+High Conditioned Elliptic Function,100,50,4,sus,two_points,random,0.05,1,12,7.793158265685329e-08
+High Conditioned Elliptic Function,100,50,4,sus,uniform,random,0.05,1,0,3.060693540379819e-07
+High Conditioned Elliptic Function,100,50,4,sus,scattered,random,0.05,1,0,3.060693540379819e-07
+High Conditioned Elliptic Function,100,50,4,sus,scattered,random,0.05,1,0,3.060693540379819e-07

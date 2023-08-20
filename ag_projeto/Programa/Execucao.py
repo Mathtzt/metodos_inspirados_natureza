@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from Utils import Utils as u
 
 diretorio_saida = "./MaterialSaida/"
-nome_experimento = "populacao_f8_150"
+nome_experimento = "cruzamento_f1_scattered"
 
 dimensao_problemas = 10
 limite_inferior_problemas = [-100.0] * dimensao_problemas
@@ -15,26 +15,26 @@ limite_superior_problemas = [100.0] * dimensao_problemas
 total_execucoes = 15
 
 total_geracoes = 100
-tamanho_populacao = 150
-total_pais_cruzamento = 2
-tipo_selecao_pais = "rws"
+tamanho_populacao = 50
+total_pais_cruzamento = 4
+tipo_selecao_pais = "sus"
 total_pais_manter_populacao = -1
 total_pais_torneio = 3
-tipo_cruzamento = "single_point"
+tipo_cruzamento = "scattered"
 taxa_cruzamento = 0.9
-tipo_mutacao = "inversion"
+tipo_mutacao = "random"
 taxa_mutacao = 0.05
-elitismo = 2
+elitismo = 1
 salvar_melhores_solucoes = True
 salvar_todas_solucoes = False
 
 problemas = [
-    # pot.HighConditionedEllipticFunction(dimensao=dimensao_problemas,
-    #                                     limite_inferior=limite_inferior_problemas,
-    #                                     limite_superior=limite_superior_problemas),
-    pot.RastriginFunction(dimensao=dimensao_problemas,
-                          limite_inferior=limite_inferior_problemas,
-                          limite_superior=limite_superior_problemas)
+    pot.HighConditionedEllipticFunction(dimensao=dimensao_problemas,
+                                        limite_inferior=limite_inferior_problemas,
+                                        limite_superior=limite_superior_problemas),
+    # pot.RastriginFunction(dimensao=dimensao_problemas,
+    #                       limite_inferior=limite_inferior_problemas,
+    #                       limite_superior=limite_superior_problemas)
 ]
 
 dirpath = u.create_folder(path = diretorio_saida, name = nome_experimento, use_date = True)
