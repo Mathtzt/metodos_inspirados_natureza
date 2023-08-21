@@ -239,3 +239,34 @@ python main.py
 python main.py
 python main.py
 python main.py
+cd de
+ls
+clear
+cd de
+ls
+clear
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
