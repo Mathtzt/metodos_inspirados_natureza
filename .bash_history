@@ -270,3 +270,75 @@ clear
 python main.py
 clear
 python main.py
+cd de
+clear
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
+cd de
+ls
+clear
+python main.py
+clear
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
+python main.py
+clear
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+clear
+clear
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
+clear
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
+python main.py
+clear
+python main.py
+clear
+python main.py
+clear
+python main.py
+cd de
+ls
