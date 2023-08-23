@@ -9,14 +9,15 @@ imgs_path = Utils.create_folder(path = dirpath, name = 'imgs')
 
 for exec in range(1, N_EXECUÇÕES + 1):
   print(f"######### Execução {exec} #########")
-  pso = PSO(func_name = 'f1',
+  pso = PSO(func_name = 'f8',
+          max_evaluations = 100000,
           min_speed = -50.,
           max_speed = 50.,
-          omega = .5,
+          omega = .7,
           cognitive_update_factor = 2.,
           social_update_factor = 2.,
           reduce_omega_linearly = True,
-          rotate_functions = False,
+          rotate_functions = True,
           early_stop_patience = 10,
           show_log = True
           )

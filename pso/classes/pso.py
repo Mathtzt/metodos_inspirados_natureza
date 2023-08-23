@@ -2,6 +2,7 @@ import random
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import tikzplotlib as tikz
 
 from deap import base, creator, tools
 from opfunu.cec.cec2014.function import F1, F8
@@ -223,8 +224,9 @@ class PSO:
 
     def plot_fitness_evolution(self, imgs_path: str, img_name: str):
         plt.figure()
-        plt.plot(self.min_fitness_values, color = 'red')
-        plt.plot(self.avg_fitness_values, color = 'green')
+        xticks_ajusted = [v * 500 for v in range(len(self.min_fitness_values))]
+        plt.plot(xticks_ajusted, self.min_fitness_values, color = 'red')
+        plt.plot(xticks_ajusted, self.avg_fitness_values, color = 'green')
         plt.xlabel('Gerações')
         plt.ylabel('Min / Avg Fitness')
         plt.title('Fitness mínimo e médio através das gerações')
@@ -234,6 +236,8 @@ class PSO:
         # Salve a imagem
         filename = f'{imgs_path}/{img_name}.jpg' 
         plt.savefig(filename)
+        # self.tikzplotlib_fix_ncols(fig)
+        # tikz.save(f"{imgs_path}/{img_name}.tex")
 
     def plot_particle_distance_evolution(self, imgs_path: str, img_name: str):
         plt.figure()
@@ -247,3 +251,14 @@ class PSO:
         # Salve a imagem
         filename = f'{imgs_path}/{img_name}.jpg' 
         plt.savefig(filename)
+        # self.tikzplotlib_fix_ncols(fig)
+        # tikz.save(f"{imgs_path}/{img_name}.tex")
+
+    def tikzplotlib_fix_ncols(self, obj):
+        """
+        workaround for matplotlib 3.6 renamed legend's _ncol to _ncols, which breaks tikzplotlib
+        """
+        if hasattr(obj, "_ncols"):
+            obj._ncol = obj._ncols
+        for child in obj.get_children():
+            self.tikzplotlib_fix_ncols(child)
