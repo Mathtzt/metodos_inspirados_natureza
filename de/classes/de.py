@@ -94,7 +94,8 @@ class DE:
         # buscando vetor de limites x dim
         all_bounds = self.get_bounds_of_all_dim()
         # inicializando a população de soluções candidatas de forma aleatória dentro dos limites especificados.
-        return all_bounds[:, 0] + (np.random.rand(self.population_size, len(all_bounds)) * (all_bounds[:, 1] - all_bounds[:, 0]))
+        pop = all_bounds[:, 0] + (np.random.rand(self.population_size, len(all_bounds)) * (all_bounds[:, 1] - all_bounds[:, 0]))
+        return pop
     
     def main(self, nexecucao: int = 0, dirpath: str = './'):
         # selecionando função desejada
@@ -150,7 +151,7 @@ class DE:
                 #%d:  %s = %f' % (i, list(np.around(best_vector, decimals=5)), best_fitness))
 
             # guardando informações para registro da otimização
-            self.best_fitness_history.append(best_fitness)
+            self.best_fitness_history.append(best_fitness) if best_fitness < prev_fitness else self.best_fitness_history.append(prev_fitness)
             self.avg_fitness_history.append(avg_fitness)
             self.mean_euclidian_distance_particles.append(u.calc_mean_euclidian_distance_particles_from_pop(population))
             # early stopping
@@ -187,10 +188,10 @@ class DE:
         plt.plot(self.best_fitness_history, color = 'red')
         plt.plot(self.avg_fitness_history, color = 'green')
         plt.xlabel('Gerações')
-        plt.ylabel('Min / Avg Fitness')
-        plt.title('Fitness mínimo e médio através das gerações')
-        plt.yscale('log')
-        plt.legend(['Min', 'Avg'])
+        plt.ylabel('Fitness')
+        plt.title('Best e Avg fitness através das gerações')
+        # plt.yscale('log')
+        plt.legend(['Best', 'Avg'])
         
         # Salve a imagem
         filename = f'{imgs_path}/{img_name}.jpg' 
@@ -202,7 +203,7 @@ class DE:
         plt.xlabel('Gerações')
         plt.ylabel('Avg')
         plt.title('Distância média das partículas')
-        plt.yscale('log')
+        # plt.yscale('log')
         plt.legend(['Avg'])
 
         # Salve a imagem

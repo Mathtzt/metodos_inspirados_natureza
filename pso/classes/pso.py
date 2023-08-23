@@ -47,7 +47,8 @@ class PSO:
         self.nout_bounds = 0
         self.min_fitness_values = None
         self.avg_fitness_values = None
-        self.mean_euclidian_distance_particles = None
+        self.best_fitness_history = []
+        self.mean_euclidian_distance_particles = []
         self.toolbox = base.Toolbox()
 
     def define_as_minimization_problem(self):
@@ -147,7 +148,7 @@ class PSO:
         initial_omega = self.omega
         nearly_stop_counter = 0
         igeneration_stopped = None
-        mean_euclidian_distance_particles = []
+
         for idx, generation in enumerate(range(1, self.max_evaluations + 1)):
             # reduzindo omega linearmente
             if self.reduce_omega_linearly:
@@ -176,9 +177,10 @@ class PSO:
             else:
                 igeneration_stopped = idx
 
-            mean_euclidian_distance_particles.append(u.calc_mean_euclidian_distance_particles_from_pop(population))
+            self.mean_euclidian_distance_particles.append(u.calc_mean_euclidian_distance_particles_from_pop(population))
             # salvando as estatísticas
             if generation == 1 or generation % 500 == 0:
+                self.best_fitness_history.append(best.fitness.values)
                 logbook.record(gen = generation,
                                evals = len(population),
                                **stats.compile(population))
@@ -188,9 +190,8 @@ class PSO:
                     else:
                         print(logbook.stream)
 
-        self.min_fitness_values = [logbook[i]['min'] for i in range(len(logbook))]
+        # self.min_fitness_values = [logbook[i]['min'] for i in range(len(logbook))]
         self.avg_fitness_values = [logbook[i]['avg'] for i in range(len(logbook))]
-        self.mean_euclidian_distance_particles = mean_euclidian_distance_particles
 
         print("-- Melhor partícula = ", best)
         print("-- Melhor fitness = ", best.fitness.values[0])
@@ -224,14 +225,14 @@ class PSO:
 
     def plot_fitness_evolution(self, imgs_path: str, img_name: str):
         plt.figure()
-        xticks_ajusted = [v * 500 for v in range(len(self.min_fitness_values))]
-        plt.plot(xticks_ajusted, self.min_fitness_values, color = 'red')
+        xticks_ajusted = [v * 500 for v in range(len(self.best_fitness_history))]
+        plt.plot(xticks_ajusted, self.best_fitness_history, color = 'red')
         plt.plot(xticks_ajusted, self.avg_fitness_values, color = 'green')
         plt.xlabel('Gerações')
-        plt.ylabel('Min / Avg Fitness')
-        plt.title('Fitness mínimo e médio através das gerações')
-        plt.yscale('log')
-        plt.legend(['Min', 'Avg'])
+        plt.ylabel('Fitness')
+        plt.title('Best e Avg fitness através das gerações')
+        # plt.yscale('log')
+        plt.legend(['Best', 'Avg'])
         
         # Salve a imagem
         filename = f'{imgs_path}/{img_name}.jpg' 
@@ -245,7 +246,7 @@ class PSO:
         plt.xlabel('Gerações')
         plt.ylabel('Avg')
         plt.title('Distância média das partículas')
-        plt.yscale('log')
+        # plt.yscale('log')
         plt.legend(['Avg'])
 
         # Salve a imagem
