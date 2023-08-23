@@ -13,8 +13,8 @@ class DE:
                  population_size: int = 10,
                  max_evaluations: int = 50000,
                  bounds: list[int] = [-100, 100],
-                 perc_mutation: float = .8,
-                 perc_crossover: float = .7,
+                 perc_mutation: float = .9,
+                 perc_crossover: float = .4,
                  crossover_type: str = None,
                  rotate_functions: bool = True,
                  early_stop_patience: int = None,
@@ -111,7 +111,7 @@ class DE:
         nearly_stop_counter = 0
         igeneration_stopped = None
         # inicializando loop das gerações
-        for i in range(self.max_evaluations):
+        for i in range(1, self.max_evaluations + 1):
             # iteração de todas as soluções candidatas da população
             for j in range(self.population_size):
                 # escolhendo três candidatos (a, b e c), que não sejam o atual

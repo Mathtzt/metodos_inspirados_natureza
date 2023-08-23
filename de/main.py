@@ -10,7 +10,8 @@ imgs_path = Utils.create_folder(path = dirpath, name = 'imgs')
 
 for exec in range(1, N_EXECUÇÕES + 1):
 	print(f"######### Execução {exec} #########")
-	de = DE(func_name = 'f1',
+	de = DE(func_name = 'f8',
+			max_evaluations = 100000,
 			rotate_functions = True,
 			early_stop_patience = 10,
 			show_log = True)
